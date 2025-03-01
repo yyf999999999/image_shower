@@ -78,29 +78,50 @@ canvas.addEventListener("mousedown", (e) => {
 
 document.addEventListener("mousemove", (e) => {
     if (isDragging){
-        mouseMoveX = e.clientX - mousePosX;  
-        mouseMoveY = e.clientY - mousePosY;
-        mousePosX = e.clientX;
-        mousePosY = e.clientY;
-        console.log(mouseMoveX, mouseMoveY);
-        imageX += mouseMoveX;
-        imageY += mouseMoveY;
-        if (imageX - img.width * imageScale / 2 > 0){
-            imageX = img.width * imageScale / 2;
-        }
-        if (imageY - img.height * imageScale / 2 > 0){
-            imageY = img.height * imageScale / 2;
-        }
-        if (imageX + img.width * imageScale / 2 < canvas.width){
-            imageX = canvas.width - img.width * imageScale / 2;
-        }
-        if (imageY + img.height * imageScale / 2 < canvas.height){
-            imageY = canvas.height - img.height * imageScale / 2;
-        }
-        drawImage();
+        moveImage(e.clientX, e.clientY);
     }
 });
 
 document.addEventListener("mouseup", (e) => {
     isDragging = false;
 });
+
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // スクロールを防ぐ
+    isDragging = true;
+    mousePosX = e.touches[0].clientX;
+    mousePosY = e.touches[0].clientY;
+});
+
+document.addEventListener("touchmove", (e) => {
+    if (isDragging) {
+        e.preventDefault(); // スクロールを防ぐ
+        moveImage(e.touches[0].clientX, e.touches[0].clientY);
+    }
+});
+
+document.addEventListener("touchend", () => {
+    isDragging = false;
+});
+
+const moveImage = (x, y) => {
+    mouseMoveX = x - mousePosX;  
+    mouseMoveY = y - mousePosY;
+    mousePosX = x;
+    mousePosY = y;
+    imageX += mouseMoveX;
+    imageY += mouseMoveY;
+    if (imageX - img.width * imageScale / 2 > 0){
+        imageX = img.width * imageScale / 2;
+    }
+    if (imageY - img.height * imageScale / 2 > 0){
+        imageY = img.height * imageScale / 2;
+    }
+    if (imageX + img.width * imageScale / 2 < canvas.width){
+        imageX = canvas.width - img.width * imageScale / 2;
+    }
+    if (imageY + img.height * imageScale / 2 < canvas.height){
+        imageY = canvas.height - img.height * imageScale / 2;
+    }
+    drawImage();
+}
